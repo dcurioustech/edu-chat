@@ -27,8 +27,8 @@ EduChat is a Spring Boot-based AI chat application designed for educational purp
    ```
 
 2. **Start Milvus** (if using vector features)
-   - Follow the [Milvus installation guide](https://milvus.io/docs/install_standalone-docker.md)
-   - Or update `application.properties` with your Milvus connection details
+    - Follow the [Milvus installation guide](https://milvus.io/docs/install_standalone-docker.md)
+    - Or update `application.properties` with your Milvus connection details
 
 3. **Build and run the application**
    ```bash
@@ -37,8 +37,8 @@ EduChat is a Spring Boot-based AI chat application designed for educational purp
    ```
 
 4. **Access the application**
-   - Web Interface: http://localhost:8080/chat
-   - API Documentation: http://localhost:8080/swagger-ui.html (if enabled)
+    - Web Interface: http://localhost:8080/chat
+    - API Documentation: http://localhost:8080/swagger-ui.html (if enabled)
 
 ## 🏗️ Project Structure
 
@@ -47,15 +47,19 @@ EduChat is a Spring Boot-based AI chat application designed for educational purp
 src/main/java/com/dcurioustech/educhat/
 ├── config/                      # Configuration classes
 │   ├── WebSocketConfig.java       # Configures WebSocket for real-time chat
+│   └── MilvusConfig.java          # Configures Milvus vector database client
 ├── controller/                   # REST controllers
 │   ├── ChatController.java        # Handles chat messages via WebSocket
 │   └── AssistantController.java   # Manages assistant creation and retrieval
 ├── service/                      # Business logic
 │   ├── ChatService.java           # Processes chat messages and integrates with Milvus
 │   ├── AssistantService.java      # Manages assistant creation and storage
+│   ├── ToolService.java           # Executes tool functions (e.g., weather API)
+│   └── MCPService.java           # Simulates multi-cloud provider connections
 ├── model/                        # Data models
 │   ├── Assistant.java             # Model for AI assistants
 │   ├── ChatMessage.java           # Model for chat messages
+│   └── ToolFunction.java          # Model for tool functions
 ├── repository/                   # Data access layer
 │   └── AssistantRepository.java   # JPA repository for assistant persistence
 ├── websocket/                    # WebSocket implementation
@@ -80,6 +84,11 @@ spring.datasource.driverClassName=org.h2.Driver
 spring.datasource.username=sa
 spring.datasource.password=password
 spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+
+# Milvus Vector Database
+milvus.host=localhost
+milvus.port=19530
+milvus.collection=educhat_embeddings
 ```
 
 ## 📚 API Reference
@@ -137,6 +146,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🙏 Acknowledgments
 
 - [Spring Boot](https://spring.io/projects/spring-boot)
+- [Milvus](https://milvus.io/)
 - [H2 Database](https://www.h2database.com/)
 - [SockJS](https://github.com/sockjs/sockjs-client)
 - [STOMP](https://stomp.github.io/)
@@ -153,6 +163,12 @@ Chat Interface: A web-based UI using Thymeleaf and WebSocket for real-time messa
 
 Assistant Management: Create and manage AI assistants via REST APIs.
 
+Tool Functions: Extensible tools (e.g., weather lookup) for assistant capabilities.
+
+MCP Connections: Simulated connections to cloud providers (e.g., AWS, Azure).
+
+Vector Database: Milvus for storing and querying embeddings of chat messages or assistant configurations.
+
 Prerequisites
 
 Java 17 or later
@@ -162,14 +178,43 @@ Java 17 or later
 Maven for dependency management
 
 
+
+Milvus (running locally or in the cloud)
+
+
+
 Web Browser for accessing the chat UI
 
 Setup Instructions
+
+
+
+
 
 Clone the Repository:
 
 git clone <repository-url>
 cd educhat
+
+
+
+Install Milvus:
+
+
+
+
+
+Follow the Milvus installation guide to set up Milvus locally or use a cloud-hosted instance.
+
+
+
+Update src/main/resources/application.properties with your Milvus host and port:
+
+milvus.host=localhost
+milvus.port=19530
+milvus.collection=educhat_embeddings
+
+
 
 Configure Dependencies: Ensure the pom.xml includes the following dependencies:
 
@@ -195,7 +240,14 @@ Configure Dependencies: Ensure the pom.xml includes the following dependencies:
         <artifactId>h2</artifactId>
         <scope>runtime</scope>
     </dependency>
+    <dependency>
+        <groupId>io.milvus</groupId>
+        <artifactId>milvus-sdk-java</artifactId>
+        <version>2.2.3</version>
+    </dependency>
 </dependencies>
+
+
 
 Run the Application:
 
@@ -209,7 +261,7 @@ Access the Application:
 
 
 
-Open http://localhost:8080 in a web browser to use the chat interface.
+Open http://localhost:8080/chat in a web browser to use the chat interface.
 
 
 
@@ -223,7 +275,7 @@ Chat Interface
 
 
 
-Navigate to http://localhost:8080.
+Navigate to http://localhost:8080/chat.
 
 
 
@@ -257,6 +309,31 @@ Tool Functions
 
 
 
+The ToolService includes a sample weather tool. Extend it by adding new tools in ToolService.java and updating the ToolFunction model.
+
+
+
+Example: Modify ToolService.executeTool to integrate with real APIs (e.g., OpenWeatherMap).
+
+MCP Connections
+
+
+
+
+
+The MCPService simulates cloud provider connections. Replace the placeholder logic in MCPService.java with real SDKs (e.g., AWS SDK for Java) for production use.
+
+Vector Database
+
+
+
+
+
+The ChatService and AssistantService use Milvus to store embeddings (e.g., for chat messages or assistant descriptions).
+
+
+
+For educational exploration, integrate an embedding model (e.g., SentenceTransformers) to generate real embeddings.
 
 Educational Notes
 
@@ -267,7 +344,16 @@ Educational Notes
 WebSocket: Learn real-time communication by experimenting with WebSocketConfig and ChatWebSocketHandler. Try adding features like private messaging.
 
 
+
+Vector Database: Explore Milvus by generating embeddings for chat messages or assistant descriptions and implementing similarity searches.
+
+
+
 REST APIs: Study AssistantController to understand RESTful design. Add endpoints for updating or deleting assistants.
+
+
+
+Extensibility: Enhance the project by integrating a real AI model (e.g., via xAI’s API at https://x.ai/api) or adding authentication.
 
 Contributing
 

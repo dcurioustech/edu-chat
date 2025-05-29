@@ -1,6 +1,7 @@
 package com.dcurioustech.educhat.service;
 
 import com.dcurioustech.educhat.model.ChatMessage;
+import io.milvus.client.MilvusServiceClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -19,6 +20,9 @@ import java.util.Map;
 public class ChatService {
 
     @Autowired
+    private MilvusServiceClient milvusClient;
+
+    @Autowired
     private RestTemplate restTemplate;
 
     @Value("${ai.api.model}")
@@ -31,6 +35,10 @@ public class ChatService {
     private String apiEndpoint;
 
     public ChatMessage processMessage(ChatMessage message) {
+        // Simulate embedding generation and storage in Milvus
+        float[] embedding = generateEmbedding(message.getContent());
+        storeInMilvus(embedding, message.getId());
+
         // Call Grok API for response
         String response = callAiApi(message.getContent());
         message.setResponse(response);
@@ -78,5 +86,15 @@ public class ChatService {
         } catch (Exception e) {
             return "Error calling AI API: " + e.getMessage();
         }
+    }
+
+    private float[] generateEmbedding(String content) {
+        // Placeholder for embedding generation (e.g., SentenceTransformers)
+        return new float[]{0.1f, 0.2f, 0.3f}; // Replace with real embedding
+    }
+
+    private void storeInMilvus(float[] embedding, String messageId) {
+        // Implement Milvus insertion logic
+        // Example: milvusClient.insert(collectionName, embedding, messageId);
     }
 }
