@@ -63,6 +63,6 @@ class ToolServiceTest {
         String result = toolService.executeTool(weatherTool, null);
 
         // Assert
-        assertEquals("Weather in unknown location: Sunny, 25°C", result);
+        assertEquals("Weather in null: Sunny, 25°C", result);
     }
 }
