@@ -22,7 +22,7 @@ jobs:
     
     - name: Build, test and install with Maven
       run: mvn clean test --no-transfer-progress
-      env:
+      # env:
         # If your tests require any environment variables, add them here
         # For example:
         # AI_API_KEY: ${{ secrets.AI_API_KEY }}
